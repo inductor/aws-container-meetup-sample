@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-nlb-ip
+spec:
+  selector:
+    matchLabels:
+      app: nginx-nlb-ip
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx-nlb-ip
+    spec:
+      containers:
+      - name: nginx-nlb-ip
+        image: nginx:mainline-alpine
+        ports:
+        - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-nlb-ip
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
+  labels:
+    app: nginx-nlb-ip
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx-nlb-ip
+  type: LoadBalancer

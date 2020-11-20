@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-clb
+spec:
+  selector:
+    matchLabels:
+      app: nginx-clb
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx-clb
+    spec:
+      containers:
+      - name: nginx-clb
+        image: nginx:mainline-alpine
+        ports:
+        - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-clb
+  labels:
+    app: nginx-clb
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx-clb
+  type: LoadBalancer
